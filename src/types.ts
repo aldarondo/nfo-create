@@ -1,3 +1,11 @@
+export interface ActorData {
+    name: string;
+    role?: string;
+    type?: string;
+    sortOrder?: number;
+    thumb?: string;
+}
+
 export interface BaseMediaData {
     title?: string;
     originalTitle?: string;
@@ -10,12 +18,16 @@ export interface BaseMediaData {
     runtime?: number;
     playcount?: number;
     dateadded?: string;
+    lockdata?: boolean;
     genres?: string[];
+    tags?: string[];
     directors?: string[];
     writers?: string[];
-    actors?: string[];
+    actors?: (string | ActorData)[];
     imdbId?: string;
     tmdbId?: string;
+    tvdbId?: string;
+    art?: { poster?: string; fanart?: string };
 }
 
 export interface MovieData extends BaseMediaData {
@@ -25,6 +37,8 @@ export interface MovieData extends BaseMediaData {
     trailer?: string;
     studios?: string[];
     countries?: string[];
+    criticRating?: number;
+    collectionNumber?: number;
 }
 
 export interface EpisodeData extends BaseMediaData {
@@ -32,6 +46,7 @@ export interface EpisodeData extends BaseMediaData {
     season?: number;
     episode?: number;
     airDate?: string;
+    sonarId?: string;
 }
 
 export interface ShowData extends BaseMediaData {

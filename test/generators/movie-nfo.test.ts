@@ -68,4 +68,61 @@ describe('Movie NFO Generator', () => {
         expect(xml).not.toContain('<tagline>');
         expect(xml).not.toContain('<year>');
     });
+
+    it('emits releasedate alongside premiered', () => {
+        const xml = generateMovieNfo({ title: 'T', releaseDate: '2023-05-01' });
+        expect(xml).toContain('<premiered>2023-05-01</premiered>');
+        expect(xml).toContain('<releasedate>2023-05-01</releasedate>');
+    });
+
+    it('emits criticrating when provided', () => {
+        const xml = generateMovieNfo({ title: 'T', criticRating: 87 });
+        expect(xml).toContain('<criticrating>87</criticrating>');
+    });
+
+    it('emits collectionnumber when provided', () => {
+        const xml = generateMovieNfo({ title: 'T', collectionNumber: 404609 });
+        expect(xml).toContain('<collectionnumber>404609</collectionnumber>');
+    });
+
+    it('emits lockdata when provided', () => {
+        const xml = generateMovieNfo({ title: 'T', lockdata: false });
+        expect(xml).toContain('<lockdata>false</lockdata>');
+    });
+
+    it('emits tags when provided', () => {
+        const xml = generateMovieNfo({ title: 'T', tags: ['martial arts', 'sequel'] });
+        expect(xml).toContain('<tag>martial arts</tag>');
+        expect(xml).toContain('<tag>sequel</tag>');
+    });
+
+    it('emits art block when provided', () => {
+        const xml = generateMovieNfo({ title: 'T', art: { poster: '/media/folder.jpg', fanart: '/media/backdrop.jpg' } });
+        expect(xml).toContain('<art>');
+        expect(xml).toContain('<poster>/media/folder.jpg</poster>');
+        expect(xml).toContain('<fanart>/media/backdrop.jpg</fanart>');
+        expect(xml).toContain('</art>');
+    });
+
+    it('emits tvdbId when provided', () => {
+        const xml = generateMovieNfo({ title: 'T', tvdbId: '9999' });
+        expect(xml).toContain('<uniqueid type="tvdb">9999</uniqueid>');
+    });
+
+    it('emits rich actor data when ActorData objects provided', () => {
+        const xml = generateMovieNfo({
+            title: 'T',
+            actors: [
+                { name: 'Keanu Reeves', role: 'John Wick', type: 'Actor', sortOrder: 0, thumb: '/people/K/Keanu Reeves/folder.jpg' },
+                'Plain Name',
+            ]
+        });
+        expect(xml).toContain('<name>Keanu Reeves</name>');
+        expect(xml).toContain('<role>John Wick</role>');
+        expect(xml).toContain('<type>Actor</type>');
+        expect(xml).toContain('<sortorder>0</sortorder>');
+        expect(xml).toContain('<thumb>/people/K/Keanu Reeves/folder.jpg</thumb>');
+        expect(xml).toContain('<name>Plain Name</name>');
+        expect(xml).not.toContain('<role>Plain Name</role>');
+    });
 });
