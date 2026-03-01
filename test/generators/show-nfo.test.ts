@@ -54,4 +54,39 @@ describe('Show NFO Generator', () => {
         expect(xml).not.toContain('<title>');
         expect(xml).not.toContain('<year>');
     });
+
+    it('emits tvdbId when provided', () => {
+        const xml = generateShowNfo({ title: 'T', tvdbId: '73888' });
+        expect(xml).toContain('<uniqueid type="tvdb">73888</uniqueid>');
+    });
+
+    it('emits lockdata when provided', () => {
+        const xml = generateShowNfo({ title: 'T', lockdata: false });
+        expect(xml).toContain('<lockdata>false</lockdata>');
+    });
+
+    it('emits tags when provided', () => {
+        const xml = generateShowNfo({ title: 'T', tags: ['anime', 'action'] });
+        expect(xml).toContain('<tag>anime</tag>');
+        expect(xml).toContain('<tag>action</tag>');
+    });
+
+    it('emits art block when provided', () => {
+        const xml = generateShowNfo({ title: 'T', art: { poster: '/shows/poster.jpg', fanart: '/shows/backdrop.jpg' } });
+        expect(xml).toContain('<art>');
+        expect(xml).toContain('<poster>/shows/poster.jpg</poster>');
+        expect(xml).toContain('<fanart>/shows/backdrop.jpg</fanart>');
+        expect(xml).toContain('</art>');
+    });
+
+    it('emits rich actor with role when ActorData provided', () => {
+        const xml = generateShowNfo({
+            title: 'T',
+            actors: [{ name: 'Star Actor', role: 'Main Role', sortOrder: 0 }, 'Secondary'],
+        });
+        expect(xml).toContain('<name>Star Actor</name>');
+        expect(xml).toContain('<role>Main Role</role>');
+        expect(xml).toContain('<sortorder>0</sortorder>');
+        expect(xml).toContain('<name>Secondary</name>');
+    });
 });
