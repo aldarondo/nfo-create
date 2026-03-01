@@ -62,4 +62,42 @@ describe('Episode NFO Generator', () => {
         expect(xml.endsWith('</episodedetails>\n')).toBe(true);
         expect(xml).toContain('<title>Pilot 3</title>');
     });
+
+    it('emits tvdbId when provided', () => {
+        const xml = generateEpisodeNfo({ title: 'T', tvdbId: '8512086' });
+        expect(xml).toContain('<uniqueid type="tvdb" default="true">8512086</uniqueid>');
+    });
+
+    it('emits sonarId when provided', () => {
+        const xml = generateEpisodeNfo({ title: 'T', sonarId: '423' });
+        expect(xml).toContain('<uniqueid type="sonarr">423</uniqueid>');
+    });
+
+    it('emits lockdata when provided', () => {
+        const xml = generateEpisodeNfo({ title: 'T', lockdata: true });
+        expect(xml).toContain('<lockdata>true</lockdata>');
+    });
+
+    it('emits art block when provided', () => {
+        const xml = generateEpisodeNfo({ title: 'T', art: { poster: '/media/thumb.jpg' } });
+        expect(xml).toContain('<art>');
+        expect(xml).toContain('<poster>/media/thumb.jpg</poster>');
+        expect(xml).toContain('</art>');
+    });
+
+    it('emits tags when provided', () => {
+        const xml = generateEpisodeNfo({ title: 'T', tags: ['anime'] });
+        expect(xml).toContain('<tag>anime</tag>');
+    });
+
+    it('emits rich actor with role when ActorData provided', () => {
+        const xml = generateEpisodeNfo({
+            title: 'T',
+            actors: [{ name: 'Cast Member', role: 'Hero' }, 'Plain Actor'],
+        });
+        expect(xml).toContain('<name>Cast Member</name>');
+        expect(xml).toContain('<role>Hero</role>');
+        expect(xml).toContain('<name>Plain Actor</name>');
+        expect(xml).not.toContain('<role>Plain Actor</role>');
+    });
 });
